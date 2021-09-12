@@ -2,38 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script>saveRecord = () => console.log("saveRecord")</script> <!-- name, type, amount    validate amount real numbers only -->
-    <script>deleteRecord = () =>console.log("deleteRecord")</script> <!-- id -->
-</head>
-<body>
+    <title>Assets and Liabilities</title>
+    <script>
+        saveRecord = (type, name, balance) => {
+            console.log("saveRecord " + type + "  " + name + " " + balance)
 
-<form class="input-form">
+            let isValid = typeof balance == 'number' && !isNaN(balance) && isFinite(balance);
+            if (!isValid) {
+                alert("Sorry, balance is not a real number")
+                return
+            }
+            if (type !== "Asset" || type !== "Liability") {
+                alert("Sorry, record type has to be Asset or Liability")
+                return
+            }
+            const newRecord = {"record_type": type, "name": name, "amount": balance}//order??
+            fetch("https://asset-liability-app.herokuapp.com/record", {
+                method: "POST",
+                body: newRecord
+            }).then(res => {
+                if (res.ok) {
+                    console.log("Request complete! response:", res);
+                    alert("Record saved")
+                }
+            }).catch(function (e) {//arrow
+                console.log(e);
+            })
+        }
+    </script>
+
+    <script>
+        deleteRecord = (recordId) => {
+            console.log("deleteRecord " + recordId)
+            if (recordId === undefined || recordId === null) {
+                console.error("Missing record id")
+                return
+            }
+            fetch("https://asset-liability-app.herokuapp.com/record/" + recordId, {
+                method: "DELETE"
+            }).then(res => {
+                if (res.ok) {
+                    console.log("Request complete! response:", res);
+                    alert("Record deleted!")
+                }
+            }).catch(function (e) {//arrow
+                console.error(e);
+            });
+        }
+    </script>
+    <script>
+        getRecords = () => {
+            fetch('https://asset-liability-app.herokuapp.com/records').then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                console.log(data);
+                const indexToProp = new Map()
+                indexToProp.set(0, "record_type")
+                indexToProp.set(1, "name")
+                indexToProp.set(2, "amount")
+                indexToProp.set(3, "id")
+
+                console.log(data);
+
+                const records = data?.records,
+                    _tr_ = document.createElement('tr'),
+                    _td_ = document.createElement('td')
+                let tableBody = document.getElementById("dataTableBody")
+                for (let i = 0; i < records.length; ++i) {
+                    let tr = _tr_.cloneNode(false);
+                    for (let j = 0; j < 4; ++j) {
+                        let td = _td_.cloneNode(false);
+                        const propName = indexToProp.get(j)
+                        const cellValue = records[i][propName];
+                        //delete cell
+                        if (j === 3) {
+                            let btn = document.createElement("button");
+                            btn.innerHTML = "Delete record";
+                            btn.onclick = function () {//arrow
+                                alert("Button is clicked");
+                                deleteRecord(cellValue)
+                            };
+                            td.appendChild(btn)
+                            tr.appendChild(td);
+                            continue
+                        }
+                        td.appendChild(document.createTextNode(cellValue || ''));
+                        tr.appendChild(td);
+                    }
+                    tableBody.appendChild(tr);
+                }
+
+                document.getElementById("totals").appendChild(document.createTextNode(data.totals || ''))
+                document.getElementById("totalAssets").appendChild(document.createTextNode(data.total_assets || ''))
+                document.getElementById("totalLiabilities").appendChild(document.createTextNode(data.total_liabilities || ''))
+            }).catch(function () {
+                console.log("Error getting records");
+            })
+        }
+    </script>
+</head>
+<body onLoad=getRecords()>
+
+<form class="input-form" action="/record">
     <label for="type">Type:</label><br>
     <input type="text" id="type" name="type"><br>
     <label for="name">Name:</label><br>
-    <input type="text" id="name" name="name">
+    <input type="text" id="name" name="name"><br>
     <label for="balance">Balance:</label><br>
-    <input type="text" id="balance" name="balance">
-    <button onclick="saveRecord()">Save</button> <!-- need to pass in all form values, and form into json -->
-
+    <input type="text" id="balance" name="balance"><br>
+    <input type="submit" value="Submit">
 </form>
 <br/>
-<p>Assets and Liabilities</p>
-<table class="tbl">
-    <th></th>
-    <tr> <!-- how to assemble this? -->
-        <td>Asset</td>
-        <td>George Chronis</td>
-        <td>111,000</td>
-        <td> <button onclick="deleteRecord()">Delete</button></td>
+<h1>Assets and Liabilities</h1>
+<table class="tbl" id="dataTable">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Balance</th>
+        <th>Delete</th>
     </tr>
+    </thead>
+    <tbody id="dataTableBody">
+    </tbody>
 </table>
+
 <br/>
-<p>Net Worth</p>
-<p>Assets Total</p>
-<p>Liabilities Total</p>
-
-
+<p>Net Worth: </p>
+<p id="totals"></p>
+<p>Assets Total: </p>
+<p id="totalAssets"></p>
+<p>Liabilities Total: </p>
+<p id="totalLiabilities"></p>
 </body>
 </html>

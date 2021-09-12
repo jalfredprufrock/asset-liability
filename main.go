@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -31,48 +33,48 @@ func (rec Record) String() string {
 
 func saveRecord(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		name := c.DefaultQuery("name", "")
-		recType := c.DefaultQuery("type", "")
-		amount := c.DefaultQuery("id", "") //wanted to use zero, wasn't allowed
-		if name == "" || recType == "" || amount == "" {
+		body, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			panic(err)
+		}
+		log.Println(string(body))
+		var newRecord Record
+		err = json.Unmarshal(body, &newRecord)
+		if err != nil {
+			panic(err)
+		}
+		log.Println(newRecord)
+		if newRecord.RecordType == "" {
 			c.String(http.StatusInternalServerError,
-				fmt.Sprintf("Error saving record: record values missing"))
+				fmt.Sprintf("Error saving record: record type missing"))
 			return
 		}
-		if _, err := db.Exec("INSERT INTO records VALUES ($1,$2,$3)", name, recType, amount); err != nil { //////////////
+		if _, err := db.Exec("INSERT INTO records VALUES ($1,$2,$3)", newRecord.Name, newRecord.RecordType, newRecord.Amount); err != nil { //////////////
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: %q", err))
 			return
 		}
 
-		//var buffer bytes.Buffer
-		//for i := 0; i < r; i++ {
-		//	buffer.WriteString("Hello from Go!\n")
-		//}
 		c.String(http.StatusOK, "")
-		//refresh page, here or front end???, or just send and load data, either one?
-		//c.Redirect()
 	}
 }
 
 func deleteRecord(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id := c.DefaultQuery("id", "")
+		id := c.Params.ByName("id")
 		if id == "" {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: no record id"))
 			return
 		}
 
-		if _, err := db.Exec("DELETE FROM records WHERE id = $1", id); err != nil { /// sql escaping?
+		if _, err := db.Exec("DELETE FROM records WHERE id = $1", id); err != nil { /// sql escaping? i think it's handled
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: %q", err))
 			return
 		}
 
-		//var buffer bytes.Buffer
-		c.String(http.StatusOK, "")
-		//refresh page!!!!!!!!!!!!!!!!!!!!
+		c.String(http.StatusOK, "") //statuses
 	}
 }
 
@@ -122,11 +124,11 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				RecordType: recType,
 			}
 
-			total += amount //type conversion
-			if recType == "ASSET" {
+			total += amount         //type conversion
+			if recType == "Asset" { //string methods for case?
 				totalAssets += amount
 			}
-			if recType == "LIABILITY" {
+			if recType == "Liability" {
 				totalLiabilities += amount
 			}
 			records = append(records, *record)
@@ -157,13 +159,6 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	//tStr := os.Getenv("REPEAT")
-	//repeat, err := strconv.Atoi(tStr)
-	//if err != nil {
-	//	log.Printf("Error converting $REPEAT to an int: %q - Using default\n", err)
-	//	repeat = 5
-	//}
-
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
@@ -177,12 +172,6 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
-
-	//router.GET("/mark", func(c *gin.Context) {
-	//	c.String(http.StatusOK, string(blackfriday.Run([]byte("**hi!**"))))//what's going on here?
-	//})
-
-	//router.GET("/repeat", repeatHandler(repeat))///????
 
 	router.GET("/records", getRecords(db))
 
