@@ -94,9 +94,9 @@
                     tableBody.appendChild(tr)
                 }
 
-                document.getElementById("totals").appendChild(document.createTextNode(data.totals || ''))
-                document.getElementById("totalAssets").appendChild(document.createTextNode(data.total_assets || ''))
-                document.getElementById("totalLiabilities").appendChild(document.createTextNode(data.total_liabilities || ''))
+                document.getElementById("totals").appendChild(document.createTextNode('$' + data.totals || ''))
+                document.getElementById("totalAssets").appendChild(document.createTextNode('$' + data.total_assets || ''))
+                document.getElementById("totalLiabilities").appendChild(document.createTextNode('$' + data.total_liabilities || ''))
             }).catch((e) => {
                 console.error("Error getting records" + e)
             })
@@ -104,24 +104,24 @@
     </script>
 </head>
 <body onLoad=getRecords()>
-
+<h2>Create a Record</h2>
 <form class="input-form" action="" onsubmit="saveRecord(); return false;">
     <label for="type">Type:</label><br>
     <input type="text" id="type" name="type" size="40"><br>
     <label for="name">Name:</label><br>
     <input type="text" id="name" name="name" size="40"><br>
-    <label for="balance">Balance:</label><br>
+    <label for="balance">Balance ($):</label><br>
     <input type="text" id="balance" name="balance" size="40"><br>
     <input type="submit" value="Submit">
 </form>
 <br/>
-<h1>Assets and Liabilities</h1>
+<h2>Assets and Liabilities</h2>
 <table class="tbl" id="dataTable">
     <thead>
     <tr>
         <th>Type</th>
         <th>Name</th>
-        <th>Balance</th>
+        <th>Balance ($)</th>
         <th>Delete</th>
     </tr>
     </thead>
