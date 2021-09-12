@@ -27,9 +27,9 @@ type myJSON struct {
 	TotalAssets      float64  `json:"total_assets"`
 }
 
-func (rec Record) String() string { ///
-	return fmt.Sprintf("{%s, %s, %d, %f}", rec.Name, rec.RecordType, rec.Id, rec.Amount)
-}
+//func (rec Record) String() string { ///
+//	return fmt.Sprintf("{%s, %s, %d, %f}", rec.Name, rec.RecordType, rec.Id, rec.Amount)
+//}
 
 func saveRecord(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -37,13 +37,13 @@ func saveRecord(db *sql.DB) gin.HandlerFunc {
 		if err != nil {
 			panic(err)
 		}
-		log.Println(string(body))
+		//log.Println(string(body))
 		var newRecord Record
 		err = json.Unmarshal(body, &newRecord)
 		if err != nil {
 			panic(err)
 		}
-		log.Println(newRecord)
+		//log.Println(newRecord)
 		if newRecord.RecordType == "" {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: record type missing"))
@@ -68,13 +68,13 @@ func deleteRecord(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		if _, err := db.Exec("DELETE FROM records WHERE id = $1", id); err != nil { /// sql escaping? i think it's handled
+		if _, err := db.Exec("DELETE FROM records WHERE id = $1", id); err != nil {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: %q", err))
 			return
 		}
 
-		c.String(http.StatusOK, "") //statuses
+		c.String(http.StatusOK, "")
 	}
 }
 
@@ -87,7 +87,6 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			records          []Record
 		)
 
-		//why don't I do this in main?, then the get is just a get
 		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS records (id serial PRIMARY KEY,name text, recType varchar(10), amount NUMERIC(20,6))"); err != nil {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error creating database table: %q", err))
@@ -123,7 +122,7 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			}
 
 			//type conversion
-			if recType == "Asset" { //string methods for case?
+			if recType == "Asset" {
 				totalAssets += amount
 				total += amount
 			}
@@ -132,12 +131,7 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				total -= amount
 			}
 			records = append(records, *record)
-			// we can use the json.Marhal function to
-			// encode the pigeon variable to a JSON string
-			//data, _ := json.Marshal(record)
-			//fmt.Println(string(data))
-			//check error
-			//c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", tick.String()))
+
 		}
 		jsonStruct := &myJSON{
 			Records:          records,
@@ -145,10 +139,8 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			TotalAssets:      totalAssets,
 			TotalLiabilities: totalLiabilities,
 		}
-		//data, _ := json.Marshal(jsonStruct) //need this?
-		//fmt.Println(string(jsonStruct.Records))
-		//error check
-		c.JSON(http.StatusOK, jsonStruct) //??expecting struct?
+
+		c.JSON(http.StatusOK, jsonStruct)
 	}
 }
 

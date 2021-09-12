@@ -26,7 +26,6 @@
             }).then(res => {
                 if (res.ok) {
                     console.log("Request complete! response:", res)
-                    alert("Record saved")
                     location.reload()
                 }
             }).catch((e) => {
@@ -47,7 +46,6 @@
             }).then(res => {
                 if (res.ok) {
                     console.log("Request complete! response:", res)
-                    alert("Record deleted!")
                     location.reload()
                 }
             }).catch((e) => {
