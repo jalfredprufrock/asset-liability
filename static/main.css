@@ -1,12 +1,8 @@
-html{
-    background-color: rgb(56, 153, 123)
-}
-
 table {
     display: table;
     border-collapse: separate;
     border-spacing: 2px;
-    border-color: gray
+    border: black;
 }
 
 thead {
@@ -42,12 +38,19 @@ colgroup {
 tr {
     display: table-row;
     vertical-align: inherit;
-    border-color: inherit
+    border-color: inherit;
+}
+tr:nth-child(even){
+    background-color: grey;
+}
+tr:nth-child(odd){
+    background-color: ghostwhite;
 }
 
 td, th {
     display: table-cell;
-    vertical-align: inherit
+    vertical-align: inherit;
+    padding: 5px 15px 5px 15px;
 }
 
 th {
