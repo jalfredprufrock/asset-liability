@@ -39,7 +39,7 @@
         deleteRecord = (recordId) => {
             console.log("deleteRecord " + recordId)
             if (recordId === undefined || recordId === null) {
-                console.error("Missing record id")
+                alert("Missing record id")
                 return
             }
             fetch("https://asset-liability-app.herokuapp.com/record/" + recordId, {
@@ -48,10 +48,10 @@
                 if (res.ok) {
                     console.log("Request complete! response:", res)
                     alert("Record deleted!")
+                    location.reload()
                 }
             }).catch((e) => {
                 console.error(e)
-                location.reload()
             });
         }
     </script>

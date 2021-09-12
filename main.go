@@ -27,7 +27,7 @@ type myJSON struct {
 	TotalAssets      float64  `json:"total_assets"`
 }
 
-func (rec Record) String() string {
+func (rec Record) String() string { ///
 	return fmt.Sprintf("{%s, %s, %d, %f}", rec.Name, rec.RecordType, rec.Id, rec.Amount)
 }
 
@@ -55,7 +55,7 @@ func saveRecord(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		c.String(http.StatusOK, "")
+		c.String(http.StatusCreated, "")
 	}
 }
 
@@ -102,7 +102,7 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 		}
 
 		defer rows.Close()
-		//println(*rows)
+
 		for rows.Next() {
 			var (
 				amount  float64
@@ -175,10 +175,9 @@ func main() {
 
 	router.GET("/records", getRecords(db))
 
-	router.POST("/record", saveRecord(db)) /////////make sure i'm using the right verbs
+	router.POST("/record", saveRecord(db))
 
 	router.DELETE("/record/:id", deleteRecord(db))
 
 	router.Run(":" + port)
-	//enum or whatever for asset liability
 }
