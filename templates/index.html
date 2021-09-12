@@ -65,8 +65,8 @@
                 indexToProp.set(3, "id")
 
                 const records = data?.records,
-                    _tr_ = document.createElement('tr'),
-                    _td_ = document.createElement('td')
+                    _tr_ = document.createElement("tr"),
+                    _td_ = document.createElement("td")
                 let tableBody = document.getElementById("dataTableBody")
                 for (let i = 0; i < records.length; ++i) {
                     let tr = _tr_.cloneNode(false)
@@ -91,9 +91,9 @@
                     tableBody.appendChild(tr)
                 }
 
-                document.getElementById("totals").appendChild(document.createTextNode('$ ' + data.totals || '$ 0.00'))
-                document.getElementById("totalAssets").appendChild(document.createTextNode('$ ' + data.total_assets || '$ 0.00'))
-                document.getElementById("totalLiabilities").appendChild(document.createTextNode('$ ' + data.total_liabilities || '$ 0.00'))
+                document.getElementById("totals").appendChild(document.createTextNode("$ " + data.totals || "$ 0.00"))
+                document.getElementById("totalAssets").appendChild(document.createTextNode("$ " + data.total_assets || "$ 0.00"))
+                document.getElementById("totalLiabilities").appendChild(document.createTextNode("$ " + data.total_liabilities || "$ 0.00"))
             }).catch((e) => {
                 console.error("Error getting records" + e)
             })
