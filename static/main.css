@@ -1,6 +1,7 @@
 body{
     margin-top: 25px;
     margin-left: 25px;
+    font-family: Arial, sans-serif;
 }
 
 input,label {
@@ -54,7 +55,7 @@ tr:nth-child(even){
     background-color: lightblue;
 }
 tr:nth-child(odd){
-    background-color: ghostwhite;
+    background-color: darkseagreen;
 }
 
 td, th {
