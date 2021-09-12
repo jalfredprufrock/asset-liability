@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>saveRecord = () => console.log("saveRecord")</script> <!-- name, type, amount    validate amount real numbers only -->
+    <script>deleteRecord = () =>console.log("deleteRecord")</script> <!-- id -->
+</head>
+<body>
+
+<form class="input-form">
+    <label for="type">Type:</label><br>
+    <input type="text" id="type" name="type"><br>
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name">
+    <label for="balance">Balance:</label><br>
+    <input type="text" id="balance" name="balance">
+    <button onclick="saveRecord()">Save</button> <!-- need to pass in all form values, and form into json -->
+
+</form>
+<br/>
+<p>Assets and Liabilities</p>
+<table class="tbl">
+    <th></th>
+    <tr> <!-- how to assemble this? -->
+        <td>Asset</td>
+        <td>George Chronis</td>
+        <td>111,000</td>
+        <td> <button onclick="deleteRecord()">Delete</button></td>
+    </tr>
+</table>
+<br/>
+<p>Net Worth</p>
+<p>Assets Total</p>
+<p>Liabilities Total</p>
+
+
+</body>
+</html>
