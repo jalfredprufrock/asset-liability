@@ -91,9 +91,9 @@
                     tableBody.appendChild(tr)
                 }
 
-                document.getElementById("totals").appendChild(document.createTextNode("$ " + data.totals || "$ 0.00"))
-                document.getElementById("totalAssets").appendChild(document.createTextNode("$ " + data.total_assets || "$ 0.00"))
-                document.getElementById("totalLiabilities").appendChild(document.createTextNode("$ " + data.total_liabilities || "$ 0.00"))
+                document.getElementById("totals").appendChild(document.createTextNode("$ " + data.totals))
+                document.getElementById("totalAssets").appendChild(document.createTextNode("$ " + data.total_assets))
+                document.getElementById("totalLiabilities").appendChild(document.createTextNode("$ " + data.total_liabilities))
             }).catch((e) => {
                 console.error("Error getting records" + e)
             })
