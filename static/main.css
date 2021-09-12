@@ -41,7 +41,7 @@ tr {
     border-color: inherit;
 }
 tr:nth-child(even){
-    background-color: grey;
+    background-color: lightblue;
 }
 tr:nth-child(odd){
     background-color: ghostwhite;
