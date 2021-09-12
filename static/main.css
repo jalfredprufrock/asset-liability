@@ -55,7 +55,7 @@ tr:nth-child(even){
     background-color: lightblue;
 }
 tr:nth-child(odd){
-    background-color: darkseagreen;
+    background-color: lightgreen;
 }
 
 td, th {
@@ -65,7 +65,8 @@ td, th {
 }
 
 th {
-    font-weight: bold
+    font-weight: bold;
+    color: lightblue;
 }
 
 caption {

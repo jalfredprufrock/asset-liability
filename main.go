@@ -27,23 +27,22 @@ type myJSON struct {
 	TotalAssets      float64  `json:"total_assets"`
 }
 
-//func (rec Record) String() string { ///
-//	return fmt.Sprintf("{%s, %s, %d, %f}", rec.Name, rec.RecordType, rec.Id, rec.Amount)
-//}
-
 func saveRecord(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		body, err := ioutil.ReadAll(c.Request.Body)
 		if err != nil {
-			panic(err)
+			c.String(http.StatusInternalServerError,
+				fmt.Sprintf("Error saving record: %q", err))
 		}
-		//log.Println(string(body))
+
 		var newRecord Record
 		err = json.Unmarshal(body, &newRecord)
 		if err != nil {
-			panic(err)
+			c.String(http.StatusInternalServerError,
+				fmt.Sprintf("Error saving record: %q", err))
+			return
 		}
-		//log.Println(newRecord)
+
 		if newRecord.RecordType == "" {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: record type missing"))
@@ -87,12 +86,6 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			records          []Record
 		)
 
-		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS records (id serial PRIMARY KEY,name text, recType varchar(10), amount NUMERIC(20,6))"); err != nil {
-			c.String(http.StatusInternalServerError,
-				fmt.Sprintf("Error creating database table: %q", err))
-			return
-		}
-
 		rows, err := db.Query("SELECT * FROM records")
 		if err != nil {
 			c.String(http.StatusInternalServerError,
@@ -121,7 +114,6 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				RecordType: recType,
 			}
 
-			//type conversion
 			if recType == "Asset" {
 				totalAssets += amount
 				total += amount
@@ -153,6 +145,10 @@ func main() {
 
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS records (id serial PRIMARY KEY,name text, recType varchar(10), amount NUMERIC(20,6))"); err != nil {
 		log.Fatal(err)
 	}
 
