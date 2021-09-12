@@ -122,12 +122,14 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				RecordType: recType,
 			}
 
-			total += amount         //type conversion
+			//type conversion
 			if recType == "Asset" { //string methods for case?
 				totalAssets += amount
+				total += amount
 			}
 			if recType == "Liability" {
 				totalLiabilities += amount
+				total -= amount
 			}
 			records = append(records, *record)
 			// we can use the json.Marhal function to
