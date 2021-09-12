@@ -19,7 +19,7 @@
                 alert("Sorry, record type has to be Asset or Liability")
                 return
             }
-            const newRecord = {record_type: type, name, amount: balance}//order??
+            const newRecord = {name, record_type: type, amount: balance}
             fetch("https://asset-liability-app.herokuapp.com/record", {
                 method: "POST",
                 body: JSON.stringify(newRecord)
@@ -82,7 +82,6 @@
                             let btn = document.createElement("button");
                             btn.innerHTML = "Delete record";
                             btn.onclick = function () {//arrow
-                                alert("Button is clicked");
                                 deleteRecord(cellValue)
                             };
                             td.appendChild(btn)
