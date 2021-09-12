@@ -1,3 +1,13 @@
+body{
+    margin-top: 25px;
+    margin-left: 25px;
+}
+
+input,label {
+    margin: 5px;
+}
+
+
 table {
     display: table;
     border-collapse: separate;
