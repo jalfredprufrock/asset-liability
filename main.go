@@ -49,7 +49,7 @@ func saveRecord(db *sql.DB) gin.HandlerFunc {
 				fmt.Sprintf("Error saving record: record type missing"))
 			return
 		}
-		if _, err := db.Exec("INSERT INTO records VALUES ($1,$2,$3)", newRecord.Name, newRecord.RecordType, newRecord.Amount); err != nil { //////////////
+		if _, err := db.Exec("INSERT INTO records VALUES (DEFAULT,$1,$2,$3)", newRecord.Name, newRecord.RecordType, newRecord.Amount); err != nil {
 			c.String(http.StatusInternalServerError,
 				fmt.Sprintf("Error saving record: %q", err))
 			return
