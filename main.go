@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
 	_ "github.com/lib/pq"
+	"github.com/shopspring/decimal"
+	_ "github.com/shopspring/decimal"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,17 +16,17 @@ import (
 )
 
 type Record struct {
-	Name       string  `json:"name"`
-	Amount     float64 `json:"amount"`
-	RecordType string  `json:"record_type"`
-	Id         int     `json:"id"`
+	Name       string          `json:"name"`
+	Amount     decimal.Decimal `json:"amount"`
+	RecordType string          `json:"record_type"`
+	Id         int             `json:"id"`
 }
 
 type myJSON struct {
-	Records          []Record `json:"records"`
-	Totals           float64  `json:"totals"`
-	TotalLiabilities float64  `json:"total_liabilities"`
-	TotalAssets      float64  `json:"total_assets"`
+	Records          []Record        `json:"records"`
+	Totals           decimal.Decimal `json:"totals"`
+	TotalLiabilities decimal.Decimal `json:"total_liabilities"`
+	TotalAssets      decimal.Decimal `json:"total_assets"`
 }
 
 func saveRecord(db *sql.DB) gin.HandlerFunc {
@@ -80,9 +82,9 @@ func deleteRecord(db *sql.DB) gin.HandlerFunc {
 func getRecords(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
-			total            float64
-			totalAssets      float64
-			totalLiabilities float64
+			total            decimal.Decimal
+			totalAssets      decimal.Decimal
+			totalLiabilities decimal.Decimal
 			records          []Record
 		)
 
@@ -97,7 +99,7 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 
 		for rows.Next() {
 			var (
-				amount  float64
+				amount  decimal.Decimal
 				name    string
 				recType string
 				id      int
@@ -115,12 +117,12 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			}
 
 			if recType == "Asset" {
-				totalAssets += amount
-				total += amount
+				totalAssets = totalAssets.Add(amount)
+				total = total.Add(amount)
 			}
 			if recType == "Liability" {
-				totalLiabilities += amount
-				total -= amount
+				totalLiabilities = totalLiabilities.Add(amount)
+				total = total.Sub(amount)
 			}
 			records = append(records, *record)
 
