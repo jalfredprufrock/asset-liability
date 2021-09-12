@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Assets and Liabilities</title>
+    <link rel="stylesheet" href="/static/main.css">
     <script>
         saveRecord = () => {
             const type = document.getElementById("type").value.trim()
             const name = document.getElementById("name").value
-            const balance = +document.getElementById("balance").value.trim()//any trouble with +?
-            console.log("saveRecord " + type + "  " + name + " " + balance)
+            const balance = +document.getElementById("balance").value.trim()
+            //console.log("saveRecord " + type + "  " + name + " " + balance)
 
             let isValid = typeof balance == 'number' && !isNaN(balance) && isFinite(balance);
             if (!isValid) {
@@ -58,7 +59,7 @@
             fetch('https://asset-liability-app.herokuapp.com/records').then(function (response) {
                 return response.json()
             }).then((data) => {
-                console.log(data)
+                //console.log(data)
                 const indexToProp = new Map()
                 indexToProp.set(0, "record_type")
                 indexToProp.set(1, "name")
