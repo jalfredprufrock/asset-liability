@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <title>Assets and Liabilities</title>
     <script>
-        saveRecord = (type, name, balance) => {
+        saveRecord = () => {
+            const type = document.getElementById("type").value.trim()
+            const name = document.getElementById("name").value
+            const balance = +document.getElementById("balance").value.trim()//any trouble with +?
             console.log("saveRecord " + type + "  " + name + " " + balance)
 
             let isValid = typeof balance == 'number' && !isNaN(balance) && isFinite(balance);
@@ -12,14 +15,14 @@
                 alert("Sorry, balance is not a real number")
                 return
             }
-            if (type !== "Asset" || type !== "Liability") {
+            if (type !== "Asset" && type !== "Liability") {
                 alert("Sorry, record type has to be Asset or Liability")
                 return
             }
-            const newRecord = {"record_type": type, "name": name, "amount": balance}//order??
+            const newRecord = {record_type: type, name, amount: balance}//order??
             fetch("https://asset-liability-app.herokuapp.com/record", {
                 method: "POST",
-                body: newRecord
+                body: JSON.stringify(newRecord)
             }).then(res => {
                 if (res.ok) {
                     console.log("Request complete! response:", res);
@@ -103,13 +106,13 @@
 </head>
 <body onLoad=getRecords()>
 
-<form class="input-form" action="/record">
+<form class="input-form" action="" onsubmit="saveRecord(); return false;">
     <label for="type">Type:</label><br>
-    <input type="text" id="type" name="type"><br>
+    <input type="text" id="type" name="type" size="40"><br>
     <label for="name">Name:</label><br>
-    <input type="text" id="name" name="name"><br>
+    <input type="text" id="name" name="name" size="40"><br>
     <label for="balance">Balance:</label><br>
-    <input type="text" id="balance" name="balance"><br>
+    <input type="text" id="balance" name="balance" size="40"><br>
     <input type="submit" value="Submit">
 </form>
 <br/>
