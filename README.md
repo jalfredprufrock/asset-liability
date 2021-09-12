@@ -1,4 +1,8 @@
-# asset-liability
-This is my first project in go, I probably should have used java, but I felt like trying it out
+# Asset Liability Application
+Front end: HTML, CSS, JS
 
-Sorry if things aren't idiomatic
+Back end: Go
+
+Database: PostgreSQL
+
+Hosting/Deployment: Heroku
