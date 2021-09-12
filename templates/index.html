@@ -32,9 +32,7 @@
                 console.error(e)
             })
         }
-    </script>
 
-    <script>
         deleteRecord = (recordId) => {
             console.log("deleteRecord " + recordId)
             if (recordId === undefined || recordId === null) {
@@ -52,8 +50,7 @@
                 console.error(e)
             });
         }
-    </script>
-    <script>
+
         getRecords = () => {
             fetch('https://asset-liability-app.herokuapp.com/records').then(function (response) {
                 return response.json()
@@ -68,34 +65,37 @@
                     _tr_ = document.createElement("tr"),
                     _td_ = document.createElement("td")
                 let tableBody = document.getElementById("dataTableBody")
-                for (let i = 0; i < records.length; ++i) {
-                    let tr = _tr_.cloneNode(false)
-                    for (let j = 0; j < 4; ++j) {
-                        let td = _td_.cloneNode(false)
-                        const propName = indexToProp.get(j)
-                        const cellValue = records[i][propName]
-                        //delete cell
-                        if (j === 3) {
-                            let btn = document.createElement("button")
-                            btn.innerHTML = "Delete record"
-                            btn.onclick = () => {
-                                deleteRecord(cellValue)
+
+                if (records) {
+                    for (let i = 0; i < records.length; ++i) {
+                        let tr = _tr_.cloneNode(false)
+                        for (let j = 0; j < 4; ++j) {
+                            let td = _td_.cloneNode(false)
+                            const propName = indexToProp.get(j)
+                            const cellValue = records[i][propName]
+                            //delete cell
+                            if (j === 3) {
+                                let btn = document.createElement("button")
+                                btn.innerHTML = "Delete record"
+                                btn.onclick = () => {
+                                    deleteRecord(cellValue)
+                                }
+                                td.appendChild(btn)
+                                tr.appendChild(td)
+                                continue
                             }
-                            td.appendChild(btn)
+                            td.appendChild(document.createTextNode(cellValue || ''))
                             tr.appendChild(td)
-                            continue
                         }
-                        td.appendChild(document.createTextNode(cellValue || ''))
-                        tr.appendChild(td)
+                        tableBody.appendChild(tr)
                     }
-                    tableBody.appendChild(tr)
                 }
 
                 document.getElementById("totals").appendChild(document.createTextNode("$ " + data.totals))
                 document.getElementById("totalAssets").appendChild(document.createTextNode("$ " + data.total_assets))
                 document.getElementById("totalLiabilities").appendChild(document.createTextNode("$ " + data.total_liabilities))
             }).catch((e) => {
-                console.error("Error getting records" + e)
+                console.error("Error getting records " + e)
             })
         }
     </script>

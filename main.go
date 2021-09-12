@@ -91,7 +91,7 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 		rows, err := db.Query("SELECT * FROM records")
 		if err != nil {
 			c.String(http.StatusInternalServerError,
-				fmt.Sprintf("Error reading ticks: %q", err))
+				fmt.Sprintf("Error reading records db: %q", err))
 			return
 		}
 
@@ -125,8 +125,8 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				total = total.Sub(amount)
 			}
 			records = append(records, *record)
-
 		}
+
 		jsonStruct := &myJSON{
 			Records:          records,
 			Totals:           total,
