@@ -9,7 +9,6 @@
             const type = document.getElementById("type").value.trim()
             const name = document.getElementById("name").value
             const balance = +document.getElementById("balance").value.trim()
-            //console.log("saveRecord " + type + "  " + name + " " + balance)
 
             let isValid = typeof balance == 'number' && !isNaN(balance) && isFinite(balance);
             if (!isValid) {
@@ -59,7 +58,6 @@
             fetch('https://asset-liability-app.herokuapp.com/records').then(function (response) {
                 return response.json()
             }).then((data) => {
-                //console.log(data)
                 const indexToProp = new Map()
                 indexToProp.set(0, "record_type")
                 indexToProp.set(1, "name")
@@ -103,6 +101,7 @@
     </script>
 </head>
 <body onLoad=getRecords()>
+
 <h2>Create a Record</h2>
 <form class="input-form" action="" onsubmit="saveRecord(); return false;">
     <label for="type">Type:</label><br>
@@ -113,7 +112,9 @@
     <input type="text" id="balance" name="balance" size="40"><br>
     <input type="submit" value="Submit">
 </form>
+
 <br/>
+
 <h2>Assets and Liabilities</h2>
 <table class="tbl" id="dataTable">
     <thead>
@@ -129,6 +130,7 @@
 </table>
 
 <br/>
+
 <div class="row">
     <div class="block">
         <h3>Net Worth: </h3>
@@ -143,5 +145,6 @@
         <p id="totalLiabilities"></p>
     </div>
 </div>
+
 </body>
 </html>
