@@ -25,11 +25,12 @@
                 body: JSON.stringify(newRecord)
             }).then(res => {
                 if (res.ok) {
-                    console.log("Request complete! response:", res);
+                    console.log("Request complete! response:", res)
                     alert("Record saved")
+                    location.reload()
                 }
-            }).catch(function (e) {//arrow
-                console.log(e);
+            }).catch((e) => {
+                console.error(e)
             })
         }
     </script>
@@ -45,60 +46,59 @@
                 method: "DELETE"
             }).then(res => {
                 if (res.ok) {
-                    console.log("Request complete! response:", res);
+                    console.log("Request complete! response:", res)
                     alert("Record deleted!")
                 }
-            }).catch(function (e) {//arrow
-                console.error(e);
+            }).catch((e) => {
+                console.error(e)
+                location.reload()
             });
         }
     </script>
     <script>
         getRecords = () => {
             fetch('https://asset-liability-app.herokuapp.com/records').then(function (response) {
-                return response.json();
-            }).then(function (data) {
-                console.log(data);
+                return response.json()
+            }).then((data) => {
+                console.log(data)
                 const indexToProp = new Map()
                 indexToProp.set(0, "record_type")
                 indexToProp.set(1, "name")
                 indexToProp.set(2, "amount")
                 indexToProp.set(3, "id")
 
-                console.log(data);
-
                 const records = data?.records,
                     _tr_ = document.createElement('tr'),
                     _td_ = document.createElement('td')
                 let tableBody = document.getElementById("dataTableBody")
                 for (let i = 0; i < records.length; ++i) {
-                    let tr = _tr_.cloneNode(false);
+                    let tr = _tr_.cloneNode(false)
                     for (let j = 0; j < 4; ++j) {
-                        let td = _td_.cloneNode(false);
+                        let td = _td_.cloneNode(false)
                         const propName = indexToProp.get(j)
-                        const cellValue = records[i][propName];
+                        const cellValue = records[i][propName]
                         //delete cell
                         if (j === 3) {
-                            let btn = document.createElement("button");
-                            btn.innerHTML = "Delete record";
-                            btn.onclick = function () {//arrow
+                            let btn = document.createElement("button")
+                            btn.innerHTML = "Delete record"
+                            btn.onclick = () => {
                                 deleteRecord(cellValue)
-                            };
+                            }
                             td.appendChild(btn)
-                            tr.appendChild(td);
+                            tr.appendChild(td)
                             continue
                         }
-                        td.appendChild(document.createTextNode(cellValue || ''));
-                        tr.appendChild(td);
+                        td.appendChild(document.createTextNode(cellValue || ''))
+                        tr.appendChild(td)
                     }
-                    tableBody.appendChild(tr);
+                    tableBody.appendChild(tr)
                 }
 
                 document.getElementById("totals").appendChild(document.createTextNode(data.totals || ''))
                 document.getElementById("totalAssets").appendChild(document.createTextNode(data.total_assets || ''))
                 document.getElementById("totalLiabilities").appendChild(document.createTextNode(data.total_liabilities || ''))
-            }).catch(function () {
-                console.log("Error getting records");
+            }).catch((e) => {
+                console.error("Error getting records" + e)
             })
         }
     </script>
