@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
@@ -16,15 +14,15 @@ import (
 type Record struct {
 	Name       string  `json:"name"`
 	Amount     float64 `json:"amount"`
-	RecordType string  `json:"record-type"`
+	RecordType string  `json:"record_type"`
 	Id         int     `json:"id"`
 }
 
 type myJSON struct {
 	Records          []Record `json:"records"`
 	Totals           float64  `json:"totals"`
-	TotalLiabilities float64  `json:"total-liabilities"`
-	TotalAssets      float64  `json:"total-assets"`
+	TotalLiabilities float64  `json:"total_liabilities"`
+	TotalAssets      float64  `json:"total_assets"`
 }
 
 func (rec Record) String() string {
@@ -47,11 +45,11 @@ func saveRecord(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		var buffer bytes.Buffer
+		//var buffer bytes.Buffer
 		//for i := 0; i < r; i++ {
 		//	buffer.WriteString("Hello from Go!\n")
 		//}
-		c.String(http.StatusOK, buffer.String())
+		c.String(http.StatusOK, "")
 		//refresh page, here or front end???, or just send and load data, either one?
 		//c.Redirect()
 	}
@@ -72,8 +70,8 @@ func deleteRecord(db *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		var buffer bytes.Buffer
-		c.String(http.StatusOK, buffer.String())
+		//var buffer bytes.Buffer
+		c.String(http.StatusOK, "")
 		//refresh page!!!!!!!!!!!!!!!!!!!!
 	}
 }
@@ -145,10 +143,10 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 			TotalAssets:      totalAssets,
 			TotalLiabilities: totalLiabilities,
 		}
-		data, _ := json.Marshal(jsonStruct) //need this?
-		fmt.Println(string(data))
+		//data, _ := json.Marshal(jsonStruct) //need this?
+		//fmt.Println(string(jsonStruct.Records))
 		//error check
-		c.JSON(http.StatusOK, data) //??expecting struct?
+		c.JSON(http.StatusOK, jsonStruct) //??expecting struct?
 	}
 }
 
