@@ -110,16 +110,14 @@ func getRecords(db *sql.DB) gin.HandlerFunc {
 				recType string
 				id      int
 			)
-			if err := rows.Scan(&id, &amount, &name, &recType); err != nil {
+			if err := rows.Scan(&id, &name, &recType, &amount); err != nil {
 				c.String(http.StatusInternalServerError,
-					fmt.Sprintf("Error scanning ticks: %q", err))
+					fmt.Sprintf("Error reading records db: %q", err))
 				return
 			}
 			record := &Record{
-				Name:   name,
-				Amount: amount,
-				//Amount: fmt.Sprintf("%f",amount),
-				//:  fmt.Sprintf("%d",id),
+				Name:       name,
+				Amount:     amount,
 				Id:         id,
 				RecordType: recType,
 			}
