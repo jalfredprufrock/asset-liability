@@ -47,13 +47,13 @@ func saveRecord(db *sql.DB) gin.HandlerFunc {
 		}
 
 		if newRecord.RecordType == "" {
-			c.String(http.StatusInternalServerError,
+			c.String(http.StatusBadRequest,
 				fmt.Sprintf("Error saving record: record type missing"))
 			return
 		}
 
 		if strings.Compare(newRecord.RecordType, "Asset") != 0 || strings.Compare(newRecord.RecordType, "Liability") != 0 {
-			c.String(http.StatusInternalServerError,
+			c.String(http.StatusBadRequest,
 				fmt.Sprintf("Error saving record: record type unacceptable"))
 			return
 		}
@@ -72,7 +72,7 @@ func deleteRecord(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Params.ByName("id")
 		if id == "" {
-			c.String(http.StatusInternalServerError,
+			c.String(http.StatusBadRequest,
 				fmt.Sprintf("Error saving record: no record id"))
 			return
 		}
